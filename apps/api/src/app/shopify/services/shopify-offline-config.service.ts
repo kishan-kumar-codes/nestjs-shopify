@@ -24,3 +24,19 @@ export class ShopifyOfflineConfigService implements ShopifyAuthOptionsFactory {
     };
   }
 }
+@Injectable()
+export class ShopifyOffline implements ShopifyAuthOptionsFactory {
+  constructor(
+    @Inject(shopifyOfflineConfig.KEY)
+    private readonly config: ShopifyOfflineConfig,
+    private readonly afterAuthHandler: AfterAuthHandlerService
+  ) {}
+
+  createShopifyAuthOptions(): ShopifyAuthModuleOptions {
+    return {
+      ...this.config,
+      AfterAuthHandlerService: this.createShopifyAuthOptions,
+      afterAuthHandler: this.afterAuthHandler,
+    };
+  }
+}
